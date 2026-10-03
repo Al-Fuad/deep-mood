@@ -1,122 +1,90 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import Header from './components/Header';
+import Predictor from './components/Predictor';
+import ProjectDetails from './components/ProjectDetails';
+import BatchTester from './components/BatchTester';
+import ApiDocsView from './components/ApiDocsView';
+import { Sparkles, Heart } from 'lucide-react';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [activeTab, setActiveTab] = useState('playground');
+  const [selectedModel, setSelectedModel] = useState('BiLSTM');
+  const [apiStatus, setApiStatus] = useState('checking');
+
+  useEffect(() => {
+    const checkApi = async () => {
+      try {
+        const res = await fetch('/api/info');
+        if (res.ok) {
+          setApiStatus('online');
+        } else {
+          setApiStatus('offline');
+        }
+      } catch (err) {
+        setApiStatus('offline');
+      }
+    };
+    checkApi();
+    const interval = setInterval(checkApi, 15000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+    <div className="deepmood-app">
+      <Header
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        apiStatus={apiStatus}
+      />
+
+      <main className="app-container">
+        {/* Hero Section */}
+        <section className="hero-section">
+          <div className="hero-pill">
+            <Sparkles size={14} />
+            <span>State-of-the-Art Deep Emotion Intelligence</span>
+          </div>
+
+          <h1 className="hero-title">
+            Decode Emotion with <span>Deep Neural Nuance</span>
+          </h1>
+
+          <p className="hero-subtitle">
+            Classifying human emotion into <strong>Joy, Sadness, Love, Anger, Fear,</strong> and <strong>Surprise</strong> using
+            Bidirectional LSTMs & GRUs trained on the benchmark <em>dair-ai/emotion</em> dataset.
           </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+        </section>
 
-      <div className="ticks"></div>
+        {/* Tab Content */}
+        {activeTab === 'playground' && (
+          <Predictor
+            selectedModel={selectedModel}
+            setSelectedModel={setSelectedModel}
+          />
+        )}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        {activeTab === 'details' && <ProjectDetails />}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {activeTab === 'batch' && (
+          <BatchTester selectedModel={selectedModel} />
+        )}
+
+        {activeTab === 'api' && <ApiDocsView />}
+
+        {/* Application Footer */}
+        <footer className="app-footer">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
+            <span>Built for the DeepMood Project</span>
+            <span>•</span>
+            <span>FastAPI & React Architecture</span>
+            <span>•</span>
+            <span>MIT Licensed</span>
+          </div>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>
+            Bidirectional LSTM: 91.90% Accuracy | Bidirectional GRU: 91.70% Accuracy | 15,213 Vocabulary Tokens
+          </p>
+        </footer>
+      </main>
+    </div>
+  );
 }
-
-export default App
