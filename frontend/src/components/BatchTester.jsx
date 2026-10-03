@@ -53,20 +53,20 @@ export default function BatchTester({ selectedModel }) {
   };
 
   return (
-    <div className="glass-panel" style={{ padding: '2rem' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+    <div className="glass-panel batch-panel">
+      <div className="batch-header">
+        <div className="batch-header-text">
+          <h2 className="batch-title">
             <Cpu size={22} color="var(--accent-purple)" />
             <span>Batch Multi-Text Emotion Analyzer</span>
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>
+          <p className="batch-desc">
             Analyze multiple sentences simultaneously (one per line) and inspect aggregated emotional patterns.
           </p>
         </div>
 
         <button
-          className="primary-btn"
+          className="primary-btn batch-submit-btn"
           onClick={handleBatchPredict}
           disabled={loading || !batchText.trim()}
         >
@@ -92,14 +92,14 @@ export default function BatchTester({ selectedModel }) {
       />
 
       {error && (
-        <div style={{ padding: '0.75rem 1rem', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '8px', color: '#fca5a5', marginTop: '1rem', fontSize: '0.85rem' }}>
+        <div className="batch-error-banner">
           {error}
         </div>
       )}
 
       {batchResult && (
-        <div style={{ marginTop: '2rem' }}>
-          <h3 style={{ fontSize: '1.15rem', fontWeight: 600, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div className="batch-aggregate-section">
+          <h3 className="batch-aggregate-title">
             <BarChart2 size={18} color="var(--accent-cyan)" />
             <span>Batch Emotion Aggregate ({batchResult.total_samples} samples in {batchResult.total_time_ms} ms)</span>
           </h3>
@@ -109,8 +109,8 @@ export default function BatchTester({ selectedModel }) {
               const meta = EMOTIONS[emo] || {};
               return (
                 <div key={emo} className="dist-pill" style={{ borderColor: count > 0 ? meta.color : 'var(--border-subtle)' }}>
-                  <div style={{ fontSize: '1.25rem' }}>{meta.emoji}</div>
-                  <div style={{ fontSize: '0.82rem', textTransform: 'capitalize', color: 'var(--text-secondary)' }}>
+                  <div className="dist-emoji">{meta.emoji}</div>
+                  <div className="dist-label">
                     {emo}
                   </div>
                   <div className="dist-count" style={{ color: meta.color || '#fff' }}>
@@ -121,54 +121,38 @@ export default function BatchTester({ selectedModel }) {
             })}
           </div>
 
-          <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <h4 style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+          <div className="batch-items-section">
+            <h4 className="batch-items-title">
               Individual Line Classifications:
             </h4>
-            {batchResult.results.map((r, idx) => {
-              const emoMeta = EMOTIONS[r.prediction] || {};
-              return (
-                <div
-                  key={idx}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '0.85rem 1.15rem',
-                    borderRadius: '8px',
-                    background: 'rgba(15, 23, 42, 0.6)',
-                    border: '1px solid var(--border-subtle)',
-                    gap: '1rem',
-                  }}
-                >
-                  <span style={{ fontSize: '0.9rem', color: '#e2e8f0', flex: 1 }}>
-                    "{r.text}"
-                  </span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                    <span
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.35rem',
-                        padding: '0.25rem 0.65rem',
-                        borderRadius: '999px',
-                        fontSize: '0.8rem',
-                        fontWeight: 600,
-                        background: emoMeta.bgGlow,
-                        color: emoMeta.color,
-                        border: `1px solid ${emoMeta.color}40`,
-                      }}
-                    >
-                      <span>{emoMeta.emoji}</span>
-                      <span style={{ textTransform: 'capitalize' }}>{r.prediction}</span>
+            <div className="batch-items-list">
+              {batchResult.results.map((r, idx) => {
+                const emoMeta = EMOTIONS[r.prediction] || {};
+                return (
+                  <div key={idx} className="batch-item-card">
+                    <span className="batch-item-text">
+                      "{r.text}"
                     </span>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                      {(r.confidence * 100).toFixed(1)}%
-                    </span>
+                    <div className="batch-item-meta">
+                      <span
+                        className="batch-emotion-tag"
+                        style={{
+                          background: emoMeta.bgGlow,
+                          color: emoMeta.color,
+                          borderColor: `${emoMeta.color}40`,
+                        }}
+                      >
+                        <span>{emoMeta.emoji}</span>
+                        <span style={{ textTransform: 'capitalize' }}>{r.prediction}</span>
+                      </span>
+                      <span className="batch-item-conf">
+                        {(r.confidence * 100).toFixed(1)}%
+                      </span>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

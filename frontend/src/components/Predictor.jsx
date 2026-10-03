@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Sparkles, ArrowRight, Zap, RefreshCw, Layers, Clock } from 'lucide-react';
 import { EMOTIONS, DEFAULT_EXAMPLES, API_BASE_URL } from '../utils/constants';
 
-export default function Predictor() {
+export default function Predictor({ selectedModel = 'BiGRU' }) {
   const [text, setText] = useState(
     "I am so thrilled and grateful for this incredible opportunity!"
   );
@@ -21,7 +21,7 @@ export default function Predictor() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: inputText.trim(),
-          model_name: 'BiGRU',
+          model_name: selectedModel || 'BiGRU',
         }),
       });
 
@@ -41,34 +41,27 @@ export default function Predictor() {
 
   const handleSelectExample = (ex) => {
     setText(ex.text);
-    handlePredict(ex.text, 'BiGRU');
+    handlePredict(ex.text);
   };
 
   const dominantEmotion = result ? EMOTIONS[result.prediction] || EMOTIONS.joy : null;
 
   return (
-    <div>
+    <div className="predictor-container">
       {/* Top Model Selector Bar */}
       <div className="model-selector-bar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div className="model-selector-header">
           <Layers size={18} color="var(--accent-purple)" />
-          <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Inference Model:</span>
+          <span className="model-selector-title">Inference Model:</span>
         </div>
 
         <div className="model-toggle-group">
-          <div className="model-choice-btn selected" style={{ cursor: 'default' }}>
-            <span>Bidirectional GRU (BiGRU)</span>
-            <span className="model-metric-tag">91.70% Test Acc</span>
-            <span
-              className="model-metric-tag"
-              style={{
-                background: 'rgba(16, 185, 129, 0.15)',
-                color: '#10b981',
-                borderColor: 'rgba(16, 185, 129, 0.3)',
-              }}
-            >
-              Active
-            </span>
+          <div className="model-choice-btn selected">
+            <span className="model-choice-name">Bidirectional GRU (BiGRU)</span>
+            <div className="model-badge-group">
+              <span className="model-metric-tag">91.70% Test Acc</span>
+              <span className="model-metric-tag active-tag">Active</span>
+            </div>
           </div>
         </div>
       </div>
@@ -204,8 +197,8 @@ export default function Predictor() {
               >
                 <div className="top-prediction-left">
                   <span className="emotion-icon-large">{dominantEmotion?.emoji}</span>
-                  <div>
-                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+                  <div className="top-prediction-info">
+                    <span className="top-prediction-subhead">
                       Dominant Mood
                     </span>
                     <h2 className="top-prediction-label" style={{ color: dominantEmotion?.color }}>
@@ -295,13 +288,12 @@ export default function Predictor() {
                 </div>
               )}
 
-              {/* Latency and Model Tag */}
               <div className="latency-footer">
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <span className="latency-item">
                   <Clock size={13} />
                   <span>Inference: {result.inference_time_ms} ms</span>
                 </span>
-                <span>Architecture: {result.model_name} (maxlen=50)</span>
+                <span className="latency-item">Architecture: {result.model_name || selectedModel} (maxlen=50)</span>
               </div>
             </>
           )}

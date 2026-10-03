@@ -57,7 +57,9 @@ export default function App() {
         </section>
 
         {/* Tab Content */}
-        {activeTab === 'playground' && <Predictor />}
+        {activeTab === 'playground' && (
+          <Predictor selectedModel={selectedModel} />
+        )}
 
         {activeTab === 'details' && <ProjectDetails />}
 
@@ -69,14 +71,14 @@ export default function App() {
 
         {/* Application Footer */}
         <footer className="app-footer">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
+          <div className="footer-meta-row">
             <span>Built for the DeepMood Project</span>
-            <span>•</span>
-            <span>FastAPI & React Architecture</span>
-            <span>•</span>
+            <span className="footer-dot">•</span>
+            <span>FastAPI &amp; React Architecture</span>
+            <span className="footer-dot">•</span>
             <span>MIT Licensed</span>
           </div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>
+          <p className="footer-accuracy-notes">
             Bidirectional LSTM: 91.90% Accuracy | Bidirectional GRU: 91.70% Accuracy | 15,213 Vocabulary Tokens
           </p>
         </footer>
