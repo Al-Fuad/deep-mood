@@ -4,7 +4,8 @@ import Predictor from './components/Predictor';
 import ProjectDetails from './components/ProjectDetails';
 import BatchTester from './components/BatchTester';
 import ApiDocsView from './components/ApiDocsView';
-import { Sparkles, Heart } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
+import { API_BASE_URL } from './utils/constants';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('playground');
@@ -14,13 +15,13 @@ export default function App() {
   useEffect(() => {
     const checkApi = async () => {
       try {
-        const res = await fetch('/api/info');
+        const res = await fetch(`${API_BASE_URL}/api/info`);
         if (res.ok) {
           setApiStatus('online');
         } else {
           setApiStatus('offline');
         }
-      } catch (err) {
+      } catch {
         setApiStatus('offline');
       }
     };

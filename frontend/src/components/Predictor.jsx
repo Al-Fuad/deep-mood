@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Sparkles, ArrowRight, Zap, RefreshCw, Layers, CheckCircle2, Clock } from 'lucide-react';
-import { EMOTIONS, DEFAULT_EXAMPLES } from '../utils/constants';
+import { Sparkles, ArrowRight, Zap, RefreshCw, Layers, Clock } from 'lucide-react';
+import { EMOTIONS, DEFAULT_EXAMPLES, API_BASE_URL } from '../utils/constants';
 
 export default function Predictor({ selectedModel, setSelectedModel }) {
   const [text, setText] = useState(
@@ -16,7 +16,7 @@ export default function Predictor({ selectedModel, setSelectedModel }) {
     setError(null);
 
     try {
-      const response = await fetch('/api/predict', {
+      const response = await fetch(`${API_BASE_URL}/api/predict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

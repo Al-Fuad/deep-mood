@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Cpu, RefreshCw, Send, CheckCircle2, BarChart2 } from 'lucide-react';
-import { EMOTIONS } from '../utils/constants';
+import { Cpu, RefreshCw, Send, BarChart2 } from 'lucide-react';
+import { EMOTIONS, API_BASE_URL } from '../utils/constants';
 
 export default function BatchTester({ selectedModel }) {
   const defaultBatch = [
@@ -29,7 +29,7 @@ export default function BatchTester({ selectedModel }) {
     setError(null);
 
     try {
-      const response = await fetch('/api/predict/batch', {
+      const response = await fetch(`${API_BASE_URL}/api/predict/batch`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

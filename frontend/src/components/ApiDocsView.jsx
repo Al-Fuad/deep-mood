@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { Terminal, Copy, Check, ExternalLink, Code } from 'lucide-react';
+import { Terminal, Copy, Check, ExternalLink } from 'lucide-react';
+import { API_BASE_URL } from '../utils/constants';
 
 export default function ApiDocsView() {
   const [copiedIndex, setCopiedIndex] = useState(null);
+  const baseUrl = API_BASE_URL || (typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'http://localhost:8000');
 
-  const curlSingle = `curl -X POST "http://localhost:8000/api/predict" \\
+  const curlSingle = `curl -X POST "${baseUrl}/api/predict" \\
      -H "Content-Type: application/json" \\
      -d '{
        "text": "I can not believe how overjoyed I feel today!",
        "model_name": "BiLSTM"
      }'`;
 
-  const curlBatch = `curl -X POST "http://localhost:8000/api/predict/batch" \\
+  const curlBatch = `curl -X POST "${baseUrl}/api/predict/batch" \\
      -H "Content-Type: application/json" \\
      -d '{
        "texts": [
@@ -23,7 +25,7 @@ export default function ApiDocsView() {
 
   const pythonSnippet = `import requests
 
-url = "http://localhost:8000/api/predict"
+url = "${baseUrl}/api/predict"
 payload = {
     "text": "I cherish every moment spent with you.",
     "model_name": "BiLSTM"

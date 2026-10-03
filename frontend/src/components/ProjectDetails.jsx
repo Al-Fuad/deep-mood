@@ -3,14 +3,9 @@ import {
   Database, 
   Layers, 
   Award, 
-  Cpu, 
-  GitBranch, 
-  CheckCircle, 
   Sliders, 
   BookOpen,
-  ArrowRight,
-  TrendingUp,
-  AlertCircle
+  TrendingUp
 } from 'lucide-react';
 import { EMOTIONS } from '../utils/constants';
 
