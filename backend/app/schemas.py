@@ -3,11 +3,11 @@ from pydantic import BaseModel, Field
 
 class PredictRequest(BaseModel):
     text: str = Field(..., min_length=1, max_length=2000, description="Input text to analyze emotion for", example="I am so thrilled and grateful for this incredible opportunity!")
-    model_name: Optional[str] = Field("BiLSTM", description="Model architecture to use: 'BiLSTM' or 'BiGRU'")
+    model_name: Optional[str] = Field("BiGRU", description="Model architecture to use: 'BiGRU'")
 
 class BatchPredictRequest(BaseModel):
     texts: List[str] = Field(..., min_length=1, max_length=50, description="List of text samples to analyze")
-    model_name: Optional[str] = Field("BiLSTM", description="Model architecture to use: 'BiLSTM' or 'BiGRU'")
+    model_name: Optional[str] = Field("BiGRU", description="Model architecture to use: 'BiGRU'")
 
 class EmotionScore(BaseModel):
     label: str

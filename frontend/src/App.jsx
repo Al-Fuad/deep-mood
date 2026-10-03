@@ -9,7 +9,7 @@ import { API_BASE_URL } from './utils/constants';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('playground');
-  const [selectedModel, setSelectedModel] = useState('BiLSTM');
+  const selectedModel = 'BiGRU';
   const [apiStatus, setApiStatus] = useState('checking');
 
   useEffect(() => {
@@ -52,17 +52,12 @@ export default function App() {
 
           <p className="hero-subtitle">
             Classifying human emotion into <strong>Joy, Sadness, Love, Anger, Fear,</strong> and <strong>Surprise</strong> using
-            Bidirectional LSTMs & GRUs trained on the benchmark <em>dair-ai/emotion</em> dataset.
+            Bidirectional GRU (BiGRU) trained on the benchmark <em>dair-ai/emotion</em> dataset.
           </p>
         </section>
 
         {/* Tab Content */}
-        {activeTab === 'playground' && (
-          <Predictor
-            selectedModel={selectedModel}
-            setSelectedModel={setSelectedModel}
-          />
-        )}
+        {activeTab === 'playground' && <Predictor />}
 
         {activeTab === 'details' && <ProjectDetails />}
 

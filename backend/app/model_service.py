@@ -23,22 +23,22 @@ MAX_SEQUENCE_LENGTH = 50
 # Benchmark metrics collected from deep-mood training notebook on dair-ai/emotion
 MODEL_BENCHMARKS = [
     ModelMetric(
-        id="BiLSTM",
-        name="Bidirectional LSTM",
-        architecture="Embedding(100) -> BiLSTM(64) -> Dropout(0.5) -> Dense(64, relu) -> Dropout(0.5) -> Dense(6, softmax)",
-        test_accuracy=0.9190,
-        test_loss=0.2099,
-        is_active=True,
-        description="Top-performing model with bidirectional long short-term memory capturing past and future textual dependencies.",
-    ),
-    ModelMetric(
         id="BiGRU",
         name="Bidirectional GRU",
         architecture="Embedding(100) -> BiGRU(64) -> Dropout(0.5) -> Dense(64, relu) -> Dropout(0.5) -> Dense(6, softmax)",
         test_accuracy=0.9170,
         test_loss=0.2188,
         is_active=True,
-        description="Fast and robust gated recurrent unit model with bidirectional sequence encoding.",
+        description="Active production model with bidirectional sequence encoding, low memory footprint, and fast inference.",
+    ),
+    ModelMetric(
+        id="BiLSTM",
+        name="Bidirectional LSTM",
+        architecture="Embedding(100) -> BiLSTM(64) -> Dropout(0.5) -> Dense(64, relu) -> Dropout(0.5) -> Dense(6, softmax)",
+        test_accuracy=0.9190,
+        test_loss=0.2099,
+        is_active=False,
+        description="Evaluated benchmark model with bidirectional long short-term memory.",
     ),
     ModelMetric(
         id="RNN",
@@ -135,16 +135,7 @@ class ModelService:
         else:
             print(f"[ModelService] WARNING: tokenizer.pkl not found at {tokenizer_path}")
 
-        # Load BiLSTM
-        bilstm_path = self.artifacts_dir / "BiLSTM_model.keras"
-        if bilstm_path.exists():
-            try:
-                self.models["BiLSTM"] = tf.keras.models.load_model(str(bilstm_path))
-                print(f"[ModelService] Loaded BiLSTM model from {bilstm_path}")
-            except Exception as e:
-                print(f"[ModelService] Error loading BiLSTM: {e}")
-
-        # Load BiGRU
+        # Load BiGRU (Production model - optimal performance and memory footprint)
         bigru_path = self.artifacts_dir / "BiGRU_model.keras"
         if bigru_path.exists():
             try:
@@ -152,11 +143,12 @@ class ModelService:
                 print(f"[ModelService] Loaded BiGRU model from {bigru_path}")
             except Exception as e:
                 print(f"[ModelService] Error loading BiGRU: {e}")
+        else:
+            print(f"[ModelService] WARNING: BiGRU_model.keras not found at {bigru_path}")
 
-    def get_model(self, model_name: str) -> tf.keras.Model:
-        cleaned_name = "BiLSTM" if "lstm" in model_name.lower() else "BiGRU"
-        if cleaned_name in self.models:
-            return self.models[cleaned_name]
+    def get_model(self, model_name: str = "BiGRU") -> tf.keras.Model:
+        if "BiGRU" in self.models:
+            return self.models["BiGRU"]
         if self.models:
             first_key = list(self.models.keys())[0]
             return self.models[first_key]
@@ -191,9 +183,9 @@ class ModelService:
             )
         return token_infos
 
-    def predict_single(self, text: str, model_name: str = "BiLSTM") -> PredictResponse:
+    def predict_single(self, text: str, model_name: str = "BiGRU") -> PredictResponse:
         start_time = time.perf_counter()
-        active_model_name = "BiLSTM" if "lstm" in model_name.lower() else "BiGRU"
+        active_model_name = "BiGRU"
         model = self.get_model(active_model_name)
 
         padded = self.tokenize_and_pad([text])
@@ -226,9 +218,9 @@ class ModelService:
             inference_time_ms=inference_time_ms,
         )
 
-    def predict_batch(self, texts: List[str], model_name: str = "BiLSTM") -> BatchPredictResponse:
+    def predict_batch(self, texts: List[str], model_name: str = "BiGRU") -> BatchPredictResponse:
         start_time = time.perf_counter()
-        active_model_name = "BiLSTM" if "lstm" in model_name.lower() else "BiGRU"
+        active_model_name = "BiGRU"
         model = self.get_model(active_model_name)
 
         padded = self.tokenize_and_pad(texts)

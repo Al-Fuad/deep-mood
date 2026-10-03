@@ -34,7 +34,7 @@ export default function BatchTester({ selectedModel }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           texts: lines,
-          model_name: selectedModel,
+          model_name: selectedModel || 'BiGRU',
         }),
       });
 

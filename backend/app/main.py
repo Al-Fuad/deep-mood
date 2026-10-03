@@ -15,7 +15,7 @@ from .model_service import model_service, MODEL_BENCHMARKS, CURATED_EXAMPLES
 
 app = FastAPI(
     title="DeepMood API",
-    description="Deep Learning Emotion & Sentiment Analysis API using BiLSTM and BiGRU architectures.",
+    description="Deep Learning Emotion & Sentiment Analysis API powered exclusively by Bidirectional GRU (BiGRU).",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -73,7 +73,7 @@ def predict_emotion(request: PredictRequest):
     if not request.text.strip():
         raise HTTPException(status_code=400, detail="Text cannot be empty.")
     try:
-        return model_service.predict_single(request.text, model_name=request.model_name or "BiLSTM")
+        return model_service.predict_single(request.text, model_name=request.model_name or "BiGRU")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Inference error: {str(e)}")
 
@@ -84,7 +84,7 @@ def predict_emotion_batch(request: BatchPredictRequest):
     if not valid_texts:
         raise HTTPException(status_code=400, detail="Must provide at least one non-empty text string.")
     try:
-        return model_service.predict_batch(valid_texts, model_name=request.model_name or "BiLSTM")
+        return model_service.predict_batch(valid_texts, model_name=request.model_name or "BiGRU")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Batch inference error: {str(e)}")
 

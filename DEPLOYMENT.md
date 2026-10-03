@@ -1,7 +1,7 @@
 # DeepMood Deployment Guide: Render (Backend) + Vercel (Frontend)
 
 This guide walks you through deploying **DeepMood** in production:
-- **Backend (FastAPI + BiLSTM / BiGRU Keras models)** on **Render**
+- **Backend (FastAPI + BiGRU Keras model)** on **Render**
 - **Frontend (React + Vite SPA)** on **Vercel**
 
 ---
@@ -12,7 +12,7 @@ This guide walks you through deploying **DeepMood** in production:
 graph LR
     User([User Browser]) -->|HTTPS| Vercel[Vercel Frontend: React SPA]
     Vercel -->|VITE_API_URL /api/predict| Render[Render Web Service: FastAPI Backend]
-    Render -->|Loads| Models[BiLSTM & BiGRU Keras Models]
+    Render -->|Loads| Models[BiGRU Keras Model]
 ```
 
 ---
@@ -78,7 +78,7 @@ If you prefer setting it up manually in the Render dashboard:
    {
      "status": "online",
      "service": "DeepMood Emotion Analysis API",
-     "active_models": ["BiLSTM", "BiGRU"]
+     "active_models": ["BiGRU"]
    }
    ```
 

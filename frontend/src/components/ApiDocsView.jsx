@@ -10,7 +10,7 @@ export default function ApiDocsView() {
      -H "Content-Type: application/json" \\
      -d '{
        "text": "I can not believe how overjoyed I feel today!",
-       "model_name": "BiLSTM"
+       "model_name": "BiGRU"
      }'`;
 
   const curlBatch = `curl -X POST "${baseUrl}/api/predict/batch" \\
@@ -20,7 +20,7 @@ export default function ApiDocsView() {
          "This is unbelievable news!",
          "I am terrified of heights."
        ],
-       "model_name": "BiLSTM"
+       "model_name": "BiGRU"
      }'`;
 
   const pythonSnippet = `import requests
@@ -28,7 +28,7 @@ export default function ApiDocsView() {
 url = "${baseUrl}/api/predict"
 payload = {
     "text": "I cherish every moment spent with you.",
-    "model_name": "BiLSTM"
+    "model_name": "BiGRU"
 }
 response = requests.post(url, json=payload)
 data = response.json()

@@ -11,7 +11,7 @@ export default function Header({ activeTab, setActiveTab, apiStatus }) {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <span className="brand-title">DeepMood</span>
-            <span className="brand-badge">BiRNN v1.0</span>
+            <span className="brand-badge">BiGRU v1.0</span>
           </div>
           <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
             Deep Learning Emotion Intelligence

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Sparkles, ArrowRight, Zap, RefreshCw, Layers, Clock } from 'lucide-react';
 import { EMOTIONS, DEFAULT_EXAMPLES, API_BASE_URL } from '../utils/constants';
 
-export default function Predictor({ selectedModel, setSelectedModel }) {
+export default function Predictor() {
   const [text, setText] = useState(
     "I am so thrilled and grateful for this incredible opportunity!"
   );
@@ -10,7 +10,7 @@ export default function Predictor({ selectedModel, setSelectedModel }) {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
 
-  const handlePredict = async (inputText = text, model = selectedModel) => {
+  const handlePredict = async (inputText = text) => {
     if (!inputText.trim()) return;
     setLoading(true);
     setError(null);
@@ -21,7 +21,7 @@ export default function Predictor({ selectedModel, setSelectedModel }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: inputText.trim(),
-          model_name: model,
+          model_name: 'BiGRU',
         }),
       });
 
@@ -41,7 +41,7 @@ export default function Predictor({ selectedModel, setSelectedModel }) {
 
   const handleSelectExample = (ex) => {
     setText(ex.text);
-    handlePredict(ex.text, selectedModel);
+    handlePredict(ex.text, 'BiGRU');
   };
 
   const dominantEmotion = result ? EMOTIONS[result.prediction] || EMOTIONS.joy : null;
@@ -52,31 +52,24 @@ export default function Predictor({ selectedModel, setSelectedModel }) {
       <div className="model-selector-bar">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <Layers size={18} color="var(--accent-purple)" />
-          <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Active Architecture:</span>
+          <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Inference Model:</span>
         </div>
 
         <div className="model-toggle-group">
-          <button
-            className={`model-choice-btn ${selectedModel === 'BiLSTM' ? 'selected' : ''}`}
-            onClick={() => {
-              setSelectedModel('BiLSTM');
-              if (result) handlePredict(text, 'BiLSTM');
-            }}
-          >
-            <span>Bidirectional LSTM</span>
-            <span className="model-metric-tag">91.90% Acc</span>
-          </button>
-
-          <button
-            className={`model-choice-btn ${selectedModel === 'BiGRU' ? 'selected' : ''}`}
-            onClick={() => {
-              setSelectedModel('BiGRU');
-              if (result) handlePredict(text, 'BiGRU');
-            }}
-          >
-            <span>Bidirectional GRU</span>
-            <span className="model-metric-tag">91.70% Acc</span>
-          </button>
+          <div className="model-choice-btn selected" style={{ cursor: 'default' }}>
+            <span>Bidirectional GRU (BiGRU)</span>
+            <span className="model-metric-tag">91.70% Test Acc</span>
+            <span
+              className="model-metric-tag"
+              style={{
+                background: 'rgba(16, 185, 129, 0.15)',
+                color: '#10b981',
+                borderColor: 'rgba(16, 185, 129, 0.3)',
+              }}
+            >
+              Active
+            </span>
+          </div>
         </div>
       </div>
 
